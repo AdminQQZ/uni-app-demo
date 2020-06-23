@@ -26,6 +26,8 @@
 				</view>
 				<!-- 无数据 -->
 				<view v-if="upLoadType === 2" class="upwarp-nodata">{{ mescroll.optUp.textNoMore }}</view>
+				<!-- 请求失败 -->
+				<view v-if="upLoadType === 3" class="upwarp-nodata">{{ mescroll.optUp.textErr }}</view>
 			</view>
 		</view>
 		<!-- 回到顶部按钮 (fixed元素需写在transform外面,防止降级为absolute)-->
@@ -69,12 +71,28 @@
 			topbar: Boolean, // top的偏移量是否加上状态栏高度, 默认false (使用场景:取消原生导航栏时,配置此项可自动加上状态栏高度的偏移量)
 			bottom: [String, Number], // 上拉布局往上的偏移量 (支持20, "20rpx", "20px", "20%"格式的值, 其中纯数字则默认单位rpx, 百分比则相对于windowHeight)
 			safearea: Boolean, // bottom的偏移量是否加上底部安全区的距离, 默认false (需要适配iPhoneX时使用)
+			navbar: {
+				type: Boolean,
+				default: true
+			}, // 高度是否减去导航栏和状态栏部分
 			height: [String, Number] // 指定mescroll最小高度,默认windowHeight,使列表不满屏仍可下拉
 		},
 		computed: {
 			// mescroll最小高度,默认windowHeight,使列表不满屏仍可下拉
 			minHeight(){
-				return this.toPx(this.height || '100%') + 'px'
+				let minHeight = 0;
+				if(this.height > 0){
+					 minHeight = this.toPx(this.height);
+				}else if(this.height && Number(this.height) < 0){
+					minHeight = this.toPx('100%') + uni.upx2px(this.height)
+				} else {
+					minHeight = this.toPx('100%');
+				}
+				if(this.navbar){
+					return (minHeight - this.statusBarHeight - uni.upx2px(88) )+ 'px'
+				}else {
+					return minHeight + 'px'
+				}
 			},
 			// 下拉布局往下偏移的距离 (px)
 			numTop() {
@@ -234,7 +252,11 @@
 					callback: function(mescroll) {
 						vm.$emit('up', mescroll);
 					}
-				}
+				},
+				// 显示请求失败
+				showErr(){
+					vm.upLoadType = 3;
+				},
 			};
 
 			MeScroll.extend(diyOption, GlobalOption); // 混入全局的配置

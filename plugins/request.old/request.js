@@ -14,9 +14,8 @@ export default class request {
 			loadMore: true
 		};
 	}
-
 	// 获取合并的数据
-	dataMerge(data, options = {}) {
+	mergeConfig(data, options = {}) {
 		//判断url是不是链接
 		let urlType = /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)(([A-Za-z0-9-~]+).)+([A-Za-z0-9-~/])+$/.test(data.url);
 		let config = Object.assign({}, this.config, options, data);
@@ -35,7 +34,6 @@ export default class request {
 		}
 		return config;
 	}
-
 	//post请求
 	post(url = '', data = {}, options = {}) {
 		return this.request({
@@ -80,14 +78,16 @@ export default class request {
 	request(data) {
 		return new Promise((resolve, reject) => {
 			if (!data.url) {
-				console.log("request缺失数据url");
-				reject({
+				let errMsg = {
 					errMsg: "缺失数据url",
 					statusCode: 0
-				});
+				};
+				// 报错回调
+				this.requestError && this.requestError( errMsg);
+				reject(errMsg);
 				return;
 			}
-			let requestInfo = this.dataMerge(data);
+			let requestInfo = this.mergeConfig(data);
 			//请求前回调
 			if (this.requestStart) {
 				let requestStart = this.requestStart(requestInfo);
@@ -98,15 +98,15 @@ export default class request {
 					requestInfo.load = requestStart.load;
 					requestInfo.isFactory = requestStart.isFactory;
 				} else {
+					let errMsg = {
+						errMsg: "请求开始拦截器未通过",
+						statusCode: 0
+					};
 					//请求完成回调
-					_this.requestEnd && _this.requestEnd(requestInfo, {
-						errMsg: "请求开始拦截器未通过",
-						statusCode: 0
-					});
-					reject({
-						errMsg: "请求开始拦截器未通过",
-						statusCode: 0
-					});
+					this.requestEnd && this.requestEnd(requestInfo, errMsg);
+					// 报错回调
+					this.requestError && this.requestError(errMsg);
+					reject(errMsg);
 					return;
 				}
 			}
@@ -130,9 +130,10 @@ export default class request {
 					}
 				},
 				fail: (err) => {
-					console.log("err");
 					//请求完成回调
 					this.requestEnd && this.requestEnd(requestInfo, err);
+					// 报错回调
+					this.requestError && this.requestError(err);
 					reject(err);
 				}
 			};
@@ -166,7 +167,7 @@ export default class request {
 	}
 	//jsonp请求(只限于H5使用)
 	jsonp(url = '', data = {}, options = {}) {
-		let requestInfo = this.dataMerge({
+		let requestInfo = this.mergeConfig({
 			method: "JSONP",
 			data: data,
 			url: url,
@@ -193,15 +194,15 @@ export default class request {
 					requestInfo.load = requestStart.load;
 					requestInfo.isFactory = requestStart.isFactory;
 				} else {
+					let errMsg = {
+						errMsg: "请求开始拦截器未通过",
+						statusCode: 0
+					};
 					//请求完成回调
-					_this.requestEnd && _this.requestEnd(requestInfo, {
-						errMsg: "请求开始拦截器未通过",
-						statusCode: 0
-					});
-					reject({
-						errMsg: "请求开始拦截器未通过",
-						statusCode: 0
-					});
+					_this.requestEnd && _this.requestEnd(requestInfo, errMsg);
+					// 报错回调
+					_this.requestError && _this.requestError(errMsg);
+					reject(errMsg);
 					return;
 				}
 			}
