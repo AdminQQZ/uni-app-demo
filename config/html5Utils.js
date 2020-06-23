@@ -202,6 +202,7 @@ export const h5Login = function(type = "judge", callback) {
 					});
 			}
 		} else {
+			console.log("qqz>>>去登录");
 			getLogin(type);
 		}
 	} else {

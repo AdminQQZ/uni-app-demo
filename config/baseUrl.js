@@ -13,7 +13,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 const courtConfig = {
 	//微信公众号APPID
-	publicAppId: "",
+	publicAppId: "wx21357018f347efd7",
 	//请求接口
 	baseUrl: baseUrl,
 	//webSocket地址

@@ -1,4 +1,4 @@
-# uni-app项目模板（不喜勿喷）
+# uni-app项目模板
 > 一个5年的web前端开源的uni-app快速开发模板，参考学习一同进步
 > 建议uni-app使用时间达到1年以上的程序员来学习
 
@@ -8,14 +8,6 @@
 3. HBuilder X要安装scss/sass编译插件
 4. 运行项目
 
-### QQ交流群（加群持续更新） 607391225
-![QQ交流群](http://qn.kemean.cn//upload/202004/14/15868301778472k7oubi6.png)
-
-### 本项目开源准备了好久，为了不用mock.js模拟数据保持原味接口，买了个服务器写的后台接口
-![微信打赏二维码](http://qn.kemean.cn/upload/202006/17/15923814750253qjayobp.png)
-![支付宝打赏二维码](http://qn.kemean.cn/upload/202006/17/1592381515304aezjp7h3.jpg)
-
-开源不易，打个赏吧
 ### [H5预览地址](http://8.129.186.35/index.html)
 ### [安卓APP安装包下载地址](http://qn.kemean.cn/upload/202006/10/1591785853646tulgw1o4.apk)
 ### [Demo版GitHub地址](https://github.com/zhouwei1994/uni-app-demo)

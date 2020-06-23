@@ -144,6 +144,14 @@ function judgeLogin(callback, type = "judge"){
 		// #endif
 	}
 }
+
+function loginIntercept(data={}) {
+
+	uni.navigateTo({
+		url:data.url
+	})
+}
+
 export {
 	onLogin,
 	getUserInfo,
