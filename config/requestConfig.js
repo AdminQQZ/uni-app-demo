@@ -28,10 +28,12 @@ let $http = new request({
 	baseUrl: base.baseUrl,
 	//服务器本地上传文件地址
 	fileUrl: base.baseUrl,
+	// 服务器上传图片默认url
+	defaultUploadUrl: "api/common/v1/upload_image",
 	//设置请求头（如果使用报错跨域问题，可能是content-type请求类型和后台那边设置的不一致）
 	header: {
 		'Content-Type': 'application/json;charset=UTF-8',
-		'project_token': base.projectToken, //项目token（可删除）
+		// 'project_token': base.projectToken, //项目token（可删除）
 	}
 });
 // 添加获取七牛云token的方法
@@ -177,13 +179,11 @@ $http.dataFactory = async function(res) {
 			});
 		} else { //其他错误提示
 			if (res.isPrompt) {
-				setTimeout(function() {
-					uni.showToast({
-						title: httpData.info || httpData.msg,
-						icon: "none",
-						duration: 3000
-					});
-				}, 500);
+				uni.showToast({
+					title: httpData.info || httpData.msg,
+					icon: "none",
+					duration: 3000
+				});
 			}
 			// 返回错误的结果(catch接受数据)
 			return Promise.reject({
@@ -197,23 +197,21 @@ $http.dataFactory = async function(res) {
 	} else {
 		// 返回错误的结果(catch接受数据)
 		return Promise.reject({
-			statusCode: 0,
+			statusCode: res.response.statusCode,
 			errMsg: "【request】数据工厂验证不通过"
 		});
 	}
 };
-
+// 错误回调
 $http.requestError = function(e){
-	// e.statusCode == 0 是参数效验错误抛出的
-	if(e.statusCode == 0){
+	// e.statusCode === 0 是参数效验错误抛出的
+	if(e.statusCode === 0){
 		throw e;
 	} else {
-		setTimeout(() => {
-			uni.showToast({
-				title: "网络错误，请检查一下网络",
-				icon: "none"
-			});
-		}, 500);
+		uni.showToast({
+			title: "网络错误，请检查一下网络",
+			icon: "none"
+		});
 	}
 }
 export default $http;

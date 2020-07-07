@@ -3,7 +3,6 @@
 		<nav-bar backState="2000" title="模板页面"></nav-bar>
 		<!-- 公共组件-每个页面必须引入 -->
 		<public-module></public-module>
-		
 		<view class="nav_list" @click="onPageJump('/pages/user/login')">
 			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
 			<text>登录</text>
@@ -23,6 +22,18 @@
 		<view class="nav_list" @click="onPageJump('/pages/user/protocol')">
 			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
 			<text>协议</text>
+		</view>
+		<view class="nav_list" @click="onTokenJump('/pages/template/editInfo')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>个人信息</text>
+		</view>
+		<view class="nav_list" @click="onPageJump('/pages/template/goodsPoster')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>商品海报生成</text>
+		</view>
+		<view class="nav_list" @click="onTokenJump('/pages/template/scanCode')">
+			<image src="../../static/demo/icon_case.png" mode="aspectFit"></image>
+			<text>推广海报生成</text>
 		</view>
 		<z-navigation></z-navigation>
 	</view>
@@ -52,6 +63,13 @@ export default {
 		onPageJump(url) {
 			uni.navigateTo({
 				url: url
+			});
+		},
+		onTokenJump(url) {
+			this.judgeLogin(() => {
+				uni.navigateTo({
+					url: url
+				});
 			});
 		}
 	},
