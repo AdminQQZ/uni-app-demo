@@ -74,6 +74,10 @@ export const qiniuUpload = function(requestInfo, getQnToken) {
 					 *folderPath:上传的文件夹
 					 *region: 地区 默认为：SCN
 					 */
+                    let prefixLen = qnRes.visitPrefix.length;
+                    if(qnRes.visitPrefix.charAt(prefixLen - 1) == '/'){
+                        qnRes.visitPrefix = qnRes.visitPrefix.substring(0, prefixLen - 1)
+                    }
 					uploadFile(0);
 
 					function uploadFile(i) {
@@ -82,32 +86,15 @@ export const qiniuUpload = function(requestInfo, getQnToken) {
 						let fileData = {
 							fileIndex: i,
 							files: requestInfo.files,
+							...item
 						};
-						if (item.path) {
-							fileData.path = item.path;
-						}
-						if (item.size) {
-							fileData.size = item.size;
-						}
-						if (item.type) {
-							fileData.type = item.type;
-						}
 						if (item.name) {
 							fileData.name = item.name;
 							let nameArr = item.name.split(".");
 							updateUrl += "." + nameArr[nameArr.length - 1];
 						}
-						if (item.duration) {
-							fileData.duration = item.duration;
-						}
-						if (item.height) {
-							fileData.height = item.height;
-						}
-						if (item.width) {
-							fileData.width = item.width;
-						}
 						// 交给七牛上传
-						qiniuUploader.upload(item.path, (res) => {
+						qiniuUploader.upload(item.path || item, (res) => {
 							fileData.url = res.imageURL;
 							requestInfo.onEachUpdate && requestInfo.onEachUpdate({
 								url: res.imageURL,
@@ -169,10 +156,15 @@ export const urlUpload = function(requestInfo, dataFactory) {
 				name: requestInfo.name || "file"
 			};
 			requestInfo.files.forEach(item => {
-				files.push({
-					uri: item.path,
-					name: requestInfo.name || "file"
-				});
+                let fileInfo = {
+                    name: requestInfo.name || "file",
+                };
+                if(item.path){
+                    fileInfo.uri = item.path;
+                } else {
+                    fileInfo.file = item;
+                }
+				files.push(fileInfo);
 			});
 			let config = {
 				url: requestInfo.url,
@@ -224,28 +216,8 @@ export const urlUpload = function(requestInfo, dataFactory) {
 				let fileData = {
 					fileIndex: i,
 					files: requestInfo.files,
+					...item
 				};
-				if (item.path) {
-					fileData.path = item.path;
-				}
-				if (item.size) {
-					fileData.size = item.size;
-				}
-				if (item.type) {
-					fileData.type = item.type;
-				}
-				if (item.name) {
-					fileData.name = item.name;
-				}
-				if (item.duration) {
-					fileData.duration = item.duration;
-				}
-				if (item.height) {
-					fileData.height = item.height;
-				}
-				if (item.width) {
-					fileData.width = item.width;
-				}
 				let config = {
 					url: requestInfo.url,
 					filePath: item.path,

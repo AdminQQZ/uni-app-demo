@@ -13,7 +13,8 @@ export default class request {
 		this.config = options.config || {
 			isPrompt: true,
 			load: true,
-			isFactory: true
+			isFactory: true,
+            resend: 0
 		};
 	}
 	//post请求
@@ -90,6 +91,10 @@ export default class request {
 					throw {
 						errMsg: "【request】请求开始拦截器未通过",
 						statusCode: 0,
+						data: requestInfo.data,
+						method: requestInfo.method,
+						header: requestInfo.header,
+						url: requestInfo.url,
 					}
 				}
 			}

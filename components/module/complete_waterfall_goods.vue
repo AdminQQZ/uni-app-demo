@@ -146,7 +146,7 @@
 		data() {
 			return {
 				newList: [],
-				positionList: [],
+				positionList: {},
 				loadingTop: 0,
 				leftHistoryTop: 0,
 				rightHistoryTop: 0
@@ -281,7 +281,6 @@
 		.goods_img {
 			image {
 				width: 100%;
-				height: 345rpx;
 			}
 		}
 

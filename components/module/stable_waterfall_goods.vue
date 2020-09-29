@@ -144,7 +144,7 @@
 		data() {
 			return {
 				newList: [],
-				positionList: [],
+				positionList: {},
 				loadingTop: 0,
 				leftHistoryTop: 0,
 				rightHistoryTop: 0
@@ -288,7 +288,6 @@
 			font-size: 28rpx;
 			@include bov(2);
 		}
-
 		.sell_well {
 			display: flex;
 			padding: 0rpx 20rpx 20rpx 20rpx;

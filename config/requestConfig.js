@@ -118,13 +118,72 @@ $http.dataFactory = async function(res) {
 		if (httpData.success || httpData.code == 200) {
 			// 返回正确的结果(then接受数据)
 			return Promise.resolve(httpData.data);
-		} else if (httpData.code == "1000" || httpData.code == "1001" || httpData.code == 1100) {
+		} else if (httpData.code == "1000" || httpData.code == "1001" || httpData.code == 1100 || httpData.code == 402) {
+            
+            // 失败重新请求（最多重新请求3次）
+            // if(res.resend < 3){
+            //     let result = await $http.request({
+            //     	url: res.url,
+            //     	data: res.data,
+            //     	method: res.method,
+            //     	header: res.header,
+            //     	isPrompt: res.isPrompt,//（默认 true 说明：本接口抛出的错误是否提示）
+            //     	load: res.load,//（默认 true 说明：本接口是否提示加载动画）
+            //     	isFactory: res.isFactory, //（默认 true 说明：本接口是否调用公共的数据处理方法，设置false后isPrompt参数将失去作用）
+            //      resend: res.resend += 1 // 当前重发次数
+            //     });
+            //     // 返回正确的结果(then接受数据)
+            //     return Promise.resolve(result);
+            // }
+            // 返回错误的结果(catch接受数据)
+            // return Promise.reject({
+            // 	statusCode: 0,
+            // 	errMsg: "【request】" +  (httpData.info || httpData.msg)
+            // });
+            
+            //----------------------------------------分割线---------------------------------------------------
+            
+            // 刷新token在重新请求（最多重新请求2次）
+            // if(res.resend < 2){
+            //     let tokenResult = await $http.request({
+            //     	url: "http://localhost:7001/api/common/v1/protocol", // 获取token接口地址
+            //     	data: {
+            //             type: 1000
+            //         }, // 获取接口参数
+            //     	method: "GET",
+            //     	load: false,//（默认 true 说明：本接口是否提示加载动画）
+            //     });
+            //     // 储存token
+            //     store.commit("userInfo", tokenResult);
+            //     let result = await $http.request({
+            //     	url: res.url,
+            //     	data: res.data,
+            //     	method: res.method,
+            //     	header: res.header,
+            //     	isPrompt: res.isPrompt,//（默认 true 说明：本接口抛出的错误是否提示）
+            //     	load: res.load,//（默认 true 说明：本接口是否提示加载动画）
+            //     	isFactory: res.isFactory, //（默认 true 说明：本接口是否调用公共的数据处理方法，设置false后isPrompt参数将失去作用）
+            //         resend: res.resend += 1 // 当前重发次数
+            //     });
+            //     // 返回正确的结果(then接受数据)
+            //     return Promise.resolve(result);
+            // }
+            // 返回错误的结果(catch接受数据)
+            // return Promise.reject({
+            // 	statusCode: 0,
+            // 	errMsg: "【request】" +  (httpData.info || httpData.msg)
+            // });
+            
+            
+            
+            
+            
 			store.commit("emptyUserInfo");
 			// #ifdef MP-WEIXIN
 			onLogin();
 			// #endif
 			// #ifdef H5
-			h5Login("force");
+			h5Login("force"); 
 			// #endif
 			// #ifdef APP-PLUS
 			var content = '此时此刻需要您登录喔~';
@@ -152,7 +211,8 @@ $http.dataFactory = async function(res) {
 			// 返回错误的结果(catch接受数据)
 			return Promise.reject({
 				statusCode: 0,
-				errMsg: "【request】" +  (httpData.info || httpData.msg)
+				errMsg: "【request】" +  (httpData.info || httpData.msg),
+				data: res.data
 			});
 		} else if (httpData.code == "1004") {
 			if (loginPopupNum <= 0) {
@@ -175,9 +235,10 @@ $http.dataFactory = async function(res) {
 			// 返回错误的结果(catch接受数据)
 			return Promise.reject({
 				statusCode: 0,
-				errMsg: "【request】" + (httpData.info || httpData.msg)
+				errMsg: "【request】" + (httpData.info || httpData.msg),
+				data: res.data
 			});
-		} else { //其他错误提示
+		} else { //其他错误提示   
 			if (res.isPrompt) {
 				uni.showToast({
 					title: httpData.info || httpData.msg,
@@ -188,17 +249,19 @@ $http.dataFactory = async function(res) {
 			// 返回错误的结果(catch接受数据)
 			return Promise.reject({
 				statusCode: 0,
-				errMsg: "【request】" +  (httpData.info || httpData.msg)
+				errMsg: "【request】" +  (httpData.info || httpData.msg),
+				data: res.data
 			});
 		}
-
+        
 		/*********以上只是模板(及共参考)，需要开发者根据各自的接口返回类型修改*********/
 
 	} else {
 		// 返回错误的结果(catch接受数据)
 		return Promise.reject({
 			statusCode: res.response.statusCode,
-			errMsg: "【request】数据工厂验证不通过"
+			errMsg: "【request】数据工厂验证不通过",
+			data: res.data
 		});
 	}
 };
@@ -208,6 +271,7 @@ $http.requestError = function(e){
 	if(e.statusCode === 0){
 		throw e;
 	} else {
+        console.log(e);
 		uni.showToast({
 			title: "网络错误，请检查一下网络",
 			icon: "none"

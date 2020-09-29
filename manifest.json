@@ -9,15 +9,27 @@
             "src" : "图片路径"
         }
     ],
-    "versionName" : "1.0.7",
-    "versionCode" : 107,
+    "versionName" : "1.1.0",
+    "versionCode" : 110,
     "app-plus" : {
+        "privacy" : {
+            "prompt" : "template",
+            "template" : {
+                "title" : "隐私政策",
+                "message" : "请你务必审慎阅读、充分理解“隐私政策”各条款，包括但不限于：为了更好的向你提供服务，我们需要收集你的设备标识、操作日志等信息用于分析、优化应用性能。<br/>　　你可阅读<a href='http://8.129.186.35/index.html'>《隐私政策》</a>了解详细信息。如果你同意，请点击下面按钮开始接受我们的服务。",
+                "buttonAccept" : "我知道了",
+                "buttonRefuse" : "暂不同意"
+            }
+        },
+        "compatible" : {
+            "ignoreVersion" : true
+        },
         "modules" : {
             "Payment" : {},
             "OAuth" : {},
             "Messaging" : {},
-            "Share" : {},
-            "VideoPlayer" : {}
+            "VideoPlayer" : {},
+            "Share" : {}
         },
         "distribute" : {
             "android" : {
@@ -56,7 +68,12 @@
             },
             "sdkConfigs" : {
                 "ad" : {},
-                "maps" : {}
+                "maps" : {},
+                "share" : {}
+            },
+            "splashscreen" : {
+                "iosStyle" : "storyboard",
+                "androidStyle" : "common"
             }
         },
         "compilerVersion" : 3,
